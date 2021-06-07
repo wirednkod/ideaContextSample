@@ -9,10 +9,10 @@ const initialState = {
 const reducer = (state, action) => {
   switch(action.type) {
     case "set":
-        return {
-            count: action.set,
-            message: action.message
-        }
+      return {
+        count: action.set,
+        message: 'call API'
+      }
     case "increment":
       return {
         count: state.count + 1,

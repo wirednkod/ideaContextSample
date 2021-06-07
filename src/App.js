@@ -1,23 +1,35 @@
-import logo from './logo.svg';
 import './App.css';
+import { useEffect } from 'react';
 import Sample1 from './Sample1';
 import Sample2 from './Sample2';
-import { StoreProvider } from "./store";
-
+import { useStore } from './store';
+import { useGetApi } from './useApi';
 
 function App() {
+  const { isLoading, executeCb } = useGetApi();
+  const { dispatch } = useStore();
+
+  useEffect(() => {
+    executeCb().then(a => {
+      dispatch({type: "set", set: a[0], message: a[1]});
+    }); 
+  }, [dispatch, executeCb])
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          Context, hooks and API fetch demo
         </p>
-        <StoreProvider>
+      </header>
+      <div className="App-rest">
+      {isLoading ? (<div>is Loading</div>) : (
+        <>
           <Sample1 />
           <Sample2 />
-        </StoreProvider>
-      </header>
+        </>
+      )}
+      </div>
     </div>
   );
 }

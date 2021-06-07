@@ -1,20 +1,29 @@
 import { useStore } from './store';
-import { useGetApi } from './useApi';
+import { getApi } from './useApi';
 import { useState } from 'react';
 
 function Sample2() {
-    const { state } = useStore();
-    const { execute } = useGetApi();
+    const { state, dispatch } = useStore();
     const [outcome, setOutcome] = useState();
+    const [message, setMessage] = useState('');
 
-    const doOnClick = () => {
-      execute().then(res => setOutcome(res));
+    const doOnClick = async (alterGlobalState) => {
+      let res = await getApi();
+      setOutcome(res[0]);
+      setMessage(res[1]);
+      alterGlobalState && dispatch({type: "set", set: res[0], message: res[1]});
     }
 
     return (
       <>
-        <div>Sample 2 - state couneter: {state.count} - outcome: {outcome}</div>
-        <button onClick={doOnClick}>Bring API data</button>
+        <div style={{marginTop: '50px'}}>
+          Sample 2 - state counter: {state.count} <br />
+          Local state from api< br/>
+          count: {outcome} <br />
+          message: {message}
+        </div>
+        <button onClick={() => doOnClick(true)}>Call API (alter global state)</button>
+        <button onClick={() => doOnClick(false)}>Call API (dont alter global state)</button>
       </>
     );
   }

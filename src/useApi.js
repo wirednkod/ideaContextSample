@@ -12,22 +12,25 @@ export const getApi = async () => {
     api.rpc.system.version()
   ]);
 
-  console.log(`You are connected to chain ${chain} using ${nodeName} v${nodeVersion}`);
-  return 13; //just for the sample - imagine that this would return API data
+  let msg = `You are connected to chain ${chain} using ${nodeName} v${nodeVersion}`;
+  console.log(msg);
+  return [13, msg]; //just for the sample - imagine that this would return API data
 };
 
 export const useGetApi = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [data, setData] = useState(0);
+  const [msg, setMessage] = useState('Empty message');
   
   const execute = async () => {
     try {
       setIsLoading(true);
-      const todos = await getApi();
-      setData(todos);
+      const resp = await getApi();
+      setData(resp[0]);
+      setMessage(resp[1]);
       setIsLoading(false);
-      return todos;
+      return [data, msg];
     } catch (e) {
       setError(e);
       setIsLoading(false);
@@ -40,6 +43,6 @@ export const useGetApi = () => {
     error,
     data,
     execute: execute,
-    executeCb: useCallback(execute, [])
+    executeCb: useCallback(execute, [data, msg])
   };
 };
